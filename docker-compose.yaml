@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    networks:
+      - app_network
+    depends_on:
+      - postgres
+
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_node_app
+    environment:
+      DATABASE_URL: "postgresql://admin:postgres@postgres:5432/mydb"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_NAME: "mydb"
+      DB_USER: "admin"
+      DB_PASSWORD: "postgres"
+    ports:
+      - "3000:3000"
+    networks:
+      - app_network
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge
