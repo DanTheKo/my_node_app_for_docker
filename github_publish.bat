@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 echo Starting deployment from GitHub...
 
-set REPO_URL=https://github.com/DanTheKo/my_node_app_for_docker
+set REPO_URL=https://github.com/DanTheKo/my_node_app_for_docker.git
 set PROJECT_PATH=.
 set COMPOSE_FILE=docker-compose.yaml
 
